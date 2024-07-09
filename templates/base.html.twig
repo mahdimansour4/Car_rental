@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+</head>
+<body>
+<header>
+    <a href="{{ path('home') }}" class="nav-bar-brand">Ra7al</a>
+    <nav class="nav-left">
+        <ul class="nav_links">
+            <li><a class="{{ app.current_route == '' ? 'active' : '' }}" href="{{ path('car.list') }}">Vehicles</a></li>
+            {% if app.user and app.user.profile.id == 2 %}
+                <li><a class="{{ app.current_route == 'admin' ? 'active' : '' }}" href="{{ path('admin') }}">Admin Panel</a></li>
+            {% endif %}
+            <li><a class="{{ app.current_route == 'about' ? 'active' : '' }}" href="{{ path('about') }}">About</a></li>
+            <li><a class="{{ app.current_route == 'contact' ? 'active' : '' }}" href="{{ path('contact') }}">Contact</a></li>
+        </ul>
+    </nav>
+    <nav class="nav-right">
+        <ul class="nav_links">
+            {% if not app.user %}
+                <li><a href="{{ path('register') }}">Register</a></li>
+                <li><a href="{{ path('app_login') }}">Login</a></li>
+            {% else %}
+                <li><a class="{{ app.current_route starts with 'user.' ? 'active' : '' }}" href="{{ path('user.show', {id: app.user.id}) }}">Profile</a></li>
+                <li><a href="{{ path('app_logout') }}">Logout</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+    {% block body %}{% endblock %}
+</body>
+</html>

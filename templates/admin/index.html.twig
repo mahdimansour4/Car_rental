@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Panel{% endblock %}
+
+{% block body %}
+    {% if isAdmin %}
+        <div class="admin-section">
+            <div class="admin-users">
+                <h1>Admin Users</h1>
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Nom Utilisateur</th>
+                        <th>Email</th>
+                        <th>CIN</th>
+                        <th>Telephone</th>
+                        <th>Date Creation</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for admin in admins %}
+                        <tr>
+                            <td>{{ admin.username }}</td>
+                            <td>{{ admin.email }}</td>
+                            <td>{{ admin.cin }}</td>
+                            <td>{{ admin.telephone }}</td>
+                            <td>{{ admin.createdAt | date() }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="normal-users">
+                <h1>Normal Users</h1>
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Nom Utilisateur</th>
+                        <th>Email</th>
+                        <th>CIN</th>
+                        <th>Telephone</th>
+                        <th>Date Creation</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.cin }}</td>
+                            <td>{{ user.telephone }}</td>
+                            <td>{{ user.createdAt | date() }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="admin-actions">
+                    <a href="{{ path('car.create') }}" class="btn">Ajouter Une voiture</a>
+                    <a href="{{ path('marque.create') }}" class="btn">Creer une marque</a>
+                    <a href="{{ path('categorie.create') }}" class="btn">Creer une categorie</a>
+            </div>
+
+            <div class="grid-container">
+                {% if voitures %}
+                    {% for voiture in voitures %}
+                        <ul class="car-details">
+                            <li>{{ voiture.modele }}</li>
+                            <li>{{ voiture.couleur }}</li>
+                            {% for image in images %}
+                                {% if image.voiture == voiture %}
+                                    <li><img src="{{ asset('uploads/' ~ image.imagePath) }}" alt="Voiture image"></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <p>You do not have access to view this page.</p>
+    {% endif %}
+{% endblock %}

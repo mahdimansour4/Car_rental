@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title "Creer une marque" %}
+
+{% block body %}
+        <form action="{{ path('marque.create') }}" method="post">
+            <label for="nom">Nom</label>
+            <input id="nom" type="text" name="nom">
+            <button type="submit">Ajouter</button>
+        </form>
+        <table class="marque-table">
+            <thead>
+            <tr>
+                <th>Marques Existantes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for marque in marques %}
+                <tr>
+                    <td>{{ marque.nom }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+{% endblock %}

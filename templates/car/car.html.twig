@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Voitures{% endblock %}
+
+{% block body %}
+    <div class="grid-container">
+        {% if voitures %}
+            {% for voiture in voitures %}
+                <div class="car-card">
+                    <div class="car-image">
+                        {% for image in images %}
+                            {% if image.voiture == voiture %}
+                                <img src="{{ asset('uploads/' ~ image.imagePath) }}" alt="Voiture image">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="car-details">
+                        <h2>{{ voiture.modele }}</h2>
+                        <ul>
+                            <li><strong>Couleur:</strong> {{ voiture.couleur }}</li>
+                            <li><strong>Marque:</strong> {{ voiture.marque }}</li>
+                            <li><strong>Catégorie:</strong> {{ voiture.categorie }}</li>
+                            <li><strong>Lieu:</strong> {{ voiture.lieu }}</li>
+                            <li><strong>Prix par Jour:</strong> {{ voiture.prixParJour }} DH</li>
+                            <li><strong>Attributs:</strong> {{ voiture.attributs }}</li>
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No cars available.</p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation de Voiture{% endblock %}
+
+{% block body %}
+        <form action="{{ path('car.create') }}" method="post" enctype="multipart/form-data">
+            <label for="modele">Modele</label>
+            <input type="text" id="modele" name="modele">
+
+            <label for="couleur">Couleur</label>
+            <input type="text" id="couleur" name="couleur">
+
+            <label for="lieu">Lieu</label>
+            <input type="text" id="lieu" name="lieu">
+
+            <label for="marque">Marque</label>
+            <select id="marque" name="marque">
+                {% for marque in marques %}
+                    <option value="{{ marque.nom }}">{{ marque.nom }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="categorie">Categorie</label>
+            <select id="categorie" name="categorie">
+                {% for categorie in categories %}
+                    <option value="{{ categorie.nom }}">{{ categorie.nom }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="attributs">Attributs</label>
+            <input type="text" id="attributs" name="attributs">
+
+            <label for="prixParJour">Prix par jour</label>
+            <input type="number" id="prixParJour" name="prixParJour">
+
+            <label for="image">Image</label>
+            <label for="image" class="custom-file-upload">Choose File</label>
+            <input type="file" id="image" name="image" accept="image/*">
+
+            <button type="submit">Sauvegarder</button>
+        </form>
+{% endblock %}
