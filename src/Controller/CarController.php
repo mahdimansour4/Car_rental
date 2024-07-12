@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Categorie;
+use App\Entity\Marque;
+use App\Entity\Reservation;
 use App\Entity\Voiture;
 use App\Entity\Image;
 use App\Repository\CategorieRepository;
@@ -47,8 +50,9 @@ class CarController extends AbstractController{
                 $voiture->setAttributs($request->get("attributs"));
                 $voiture->setPrixParJour($request->get("prixParJour"));
                 $voiture->setCreatedAt(new \DateTimeImmutable('now'));
-                $voiture->setMarque($request->get("marque"));
-                $voiture->setCategorie($request->get("categorie"));
+                $voiture->setMarque($em->getRepository(Marque::class)->find($request->get("marque")));
+                $voiture->setCategorie($em->getRepository(Categorie::class)->find($request->get("categorie")));
+                $voiture->setStatutReservation('false');
                 $file = $request->files->get('image');
                 if ($file) {
                     $fileName = $fileUploaderService->upload($file);
@@ -58,7 +62,8 @@ class CarController extends AbstractController{
                 $em->persist($image);
                 $em->persist($voiture);
                 $em->flush();
-                return $this->redirectToRoute('home');
+                $this->addFlash('success',"La voiture a ete ajoute");
+                return $this->redirectToRoute('admin');
             }
 
             return $this->render('car/create.html.twig',[
@@ -71,13 +76,48 @@ class CarController extends AbstractController{
     }
 
     #[Route('/car_list', name: 'car.list')]
-    public function carList(Request $request, VoitureRepository $voitureRepository,ImageRepository $imageRepository): Response
+    public function carList(Request $request,EntityManagerInterface $em,ImageRepository $imageRepository): Response
     {
-        $voitures = $voitureRepository->findAll();
+        $voitures = $em->getRepository(Voiture::class)->findAllNotBooked();
         $images = $imageRepository->findAll();
-        return $this->render('car/car.html.twig',[
+        return $this->render('car/car_list.html.twig',[
             'voitures' => $voitures,
             'images' => $images,
+        ]);
+    }
+
+    #[Route('/car_show/{id}', name: 'car.show')]
+    public function carShow(Request $request,EntityManagerInterface $em,$id){
+        $voiture= $em->getRepository(Voiture::class)->find($id);
+        $image = $em->getRepository(Image::class)->findImageByCar($id);
+        return $this->render('car/car.html.twig',[
+            'voiture' => $voiture,
+            'image' => $image,
+        ]);
+    }
+
+    public function CarReturned(Request $request,EntityManagerInterface $em,$id){
+        $reservation = $em->getRepository(Reservation::class)->find($id);
+        $voiture = $reservation->getVoiture();
+        $voiture->setStatutReservation(0);
+        $voiture->setLieu($reservation->getLieuRetour());
+        $em->persist($voiture);
+        $em->flush();
+        return $this->redirectToRoute('admin');
+    }
+
+    #[Route('/car_search/', name: 'car.search')]
+    public function search(Request $request,EntityManagerInterface $em){
+        if($request->isMethod("GET")){
+            $voitures = $em->getRepository(Voiture::class)->findByQuery($request->get('q'));
+            $images = $em->getRepository(Image::class)->findAll();
+            return $this->render('car/car_list.html.twig',[
+                'voitures' => $voitures,
+                'images' => $images,
+            ]);
+        }
+        return $this->render('car/car.html.twig',[
+            'voitures' => $em->getRepository(Voiture::class)->findAll(),
         ]);
     }
 }

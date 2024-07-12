@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Réservations{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if reservations %}
+            <h1>Mes Réservations</h1>
+            <div class="reservations-list">
+                {% for reservation in reservations %}
+                    <div class="reservation-card">
+                        <ul>
+                            <li><strong>Date Début:</strong> {{ reservation.dateDebut | date('d-m-Y') }}</li>
+                            <li><strong>Date Fin:</strong> {{ reservation.dateFin | date('d-m-Y') }}</li>
+                            <li><strong>Voiture:</strong> {{ reservation.voiture.marque.nom }} - {{ reservation.voiture.modele }}</li>
+                            <li><a class="btn" href="{{ path('car.show', {id: reservation.voiture.id}) }}">Voir</a> </li>
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-reservations">
+                <h1>Vous n'avez pas de Réservation</h1>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

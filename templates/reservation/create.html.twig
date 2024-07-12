@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation de Reservation{% endblock %}
+
+{% block body %}
+    <form action="{{ path('reservation.create',{id: id}) }}" method="post">
+        <label for="date_debut">Date de debut</label>
+        <input class="form-control" type="date" name="dateDebut" id="date_debut">
+        <label for="date_fin">Date de fin</label>
+        <input class="form-control" type="date" name="dateFin" id="date_fin">
+
+        <label for="lieu">Lieu Recuperation</label>
+        <input type="text" id="lieu" name="lieuRecup">
+
+        <label for="lieu">Lieu Retour</label>
+        <input type="text" id="lieu" name="lieuRetour">
+
+        <button type="submit">Sauvegarder</button>
+    </form>
+{% endblock %}

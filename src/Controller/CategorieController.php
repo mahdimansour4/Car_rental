@@ -26,6 +26,7 @@ class CategorieController extends  AbstractController{
     {
         $user = $this->userRepository->findUserByEmailOrUsername($this->getUser()->getUserIdentifier());
         $id = $user->getProfile()->getId();
+        $categories = $em->getRepository(Categorie::class)->findAll();
 
         if($role = $this->roleRepository->getRole($id, 'ADMIN')){
             if($request->isMethod('POST')){
@@ -36,6 +37,7 @@ class CategorieController extends  AbstractController{
                 return $this->redirectToRoute('admin');
             }
             return $this->render('categorie/create.html.twig', [
+                'categories' => $categories,
             ]);
         }
         return $this->redirectToRoute('home', [], Response::HTTP_BAD_REQUEST);

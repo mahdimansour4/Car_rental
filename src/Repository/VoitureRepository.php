@@ -16,6 +16,26 @@ class VoitureRepository extends ServiceEntityRepository
         parent::__construct($registry, Voiture::class);
     }
 
+    public function findAllNotBooked(){
+        return $this->createQueryBuilder('v')
+            ->where('v.statutReservation = :statusReservation')
+            ->setParameter('statusReservation', 0)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    public function findByQuery($query) {
+        return $this->createQueryBuilder('v')
+            ->leftJoin('v.marque', 'm')
+            ->leftJoin('v.categorie', 'c')
+            ->where('v.modele LIKE :query')
+            ->orWhere('m.nom LIKE :query')
+            ->orWhere('c.nom LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Voiture[] Returns an array of Voiture objects
 //     */

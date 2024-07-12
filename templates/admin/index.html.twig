@@ -24,7 +24,7 @@
                             <td>{{ admin.email }}</td>
                             <td>{{ admin.cin }}</td>
                             <td>{{ admin.telephone }}</td>
-                            <td>{{ admin.createdAt | date() }}</td>
+                            <td>{{ admin.createdAt | date }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -50,7 +50,35 @@
                             <td>{{ user.email }}</td>
                             <td>{{ user.cin }}</td>
                             <td>{{ user.telephone }}</td>
-                            <td>{{ user.createdAt | date() }}</td>
+                            <td>{{ user.createdAt | date }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="normal-users">
+                <h1>Reservations</h1>
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Nom Utilisateur</th>
+                        <th>Date Debut</th>
+                        <th>Date Fin</th>
+                        <th>Prix Total</th>
+                        <th>Date Creation</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for reservation in reservations %}
+                        <tr>
+                            <td>{{ reservation.user.username }}</td>
+                            <td>{{ reservation.dateDebut | date }}</td>
+                            <td>{{ reservation.dateFin | date }}</td>
+                            <td>{{ reservation.prixTotal }}</td>
+                            <td>{{ reservation.createdAt | date }}</td>
+                            <td><a href="{{ path('my.reservation.delete', {id: reservation.id}) }}" class="btn">Supprimer</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -58,9 +86,9 @@
             </div>
 
             <div class="admin-actions">
-                    <a href="{{ path('car.create') }}" class="btn">Ajouter Une voiture</a>
-                    <a href="{{ path('marque.create') }}" class="btn">Creer une marque</a>
-                    <a href="{{ path('categorie.create') }}" class="btn">Creer une categorie</a>
+                <a href="{{ path('car.create') }}" class="btn">Ajouter Une voiture</a>
+                <a href="{{ path('marque.create') }}" class="btn">Creer une marque</a>
+                <a href="{{ path('categorie.create') }}" class="btn">Creer une categorie</a>
             </div>
 
             <div class="grid-container">
@@ -76,6 +104,8 @@
                             {% endfor %}
                         </ul>
                     {% endfor %}
+                {% else %}
+                    <p>No cars available.</p>
                 {% endif %}
             </div>
         </div>

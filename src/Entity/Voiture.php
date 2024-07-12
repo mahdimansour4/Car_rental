@@ -45,9 +45,19 @@ class Voiture
     #[ORM\ManyToOne(inversedBy: 'voiture')]
     private ?Categorie $categorie = null;
 
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'voiture')]
+    private Collection $reservations;
+
+    #[ORM\Column]
+    private ?bool $statutReservation = null;
+
     public function __construct()
     {
         $this->image = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -177,6 +187,48 @@ class Voiture
     public function setCategorie(?Categorie $categorie): static
     {
         $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): static
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getVoiture() === $this) {
+                $reservation->setVoiture(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isStatutReservation(): ?bool
+    {
+        return $this->statutReservation;
+    }
+
+    public function setStatutReservation(bool $statutReservation): static
+    {
+        $this->statutReservation = $statutReservation;
 
         return $this;
     }

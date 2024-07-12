@@ -8,4 +8,18 @@
             <input id="nom" type="text" name="nom">
             <button type="submit">Ajouter</button>
         </form>
+    <table class="marque-table">
+        <thead>
+        <tr>
+            <th>Marques Existantes</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for categorie in categories %}
+            <tr>
+                <td>{{ categorie.nom }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

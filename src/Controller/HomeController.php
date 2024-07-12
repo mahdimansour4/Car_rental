@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Voiture;
 use App\Repository\ProfileRepository;
 use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;

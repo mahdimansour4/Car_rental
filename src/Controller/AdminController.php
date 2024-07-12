@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ImageRepository;
 use App\Repository\ProfileRepository;
+use App\Repository\ReservationRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Repository\VoitureRepository;
@@ -19,6 +20,7 @@ class AdminController extends AbstractController
         private readonly RoleRepository $roleRepository,
         private readonly VoitureRepository $voitureRepository,
         private readonly ImageRepository $imageRepository,
+        private readonly ReservationRepository $reservationRepository,
     ) {
     }
 
@@ -33,13 +35,14 @@ class AdminController extends AbstractController
             $admins = $this->roleRepository->getUsersByRole('ADMIN');
             $voitures = $this->voitureRepository->findAll();
             $images = $this->imageRepository->findAll();
-
+            $reservation = $this->reservationRepository->findAll();
             return $this->render('admin/index.html.twig', [
                 'users' => $normalusers,
                 'admins' => $admins,
                 'isAdmin' => true,
                 'voitures' => $voitures,
                 'images' => $images,
+                'reservations' => $reservation,
             ]);
         } else {
             return $this->redirectToRoute('home', [], Response::HTTP_BAD_REQUEST);
