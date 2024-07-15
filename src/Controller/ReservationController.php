@@ -43,6 +43,7 @@ class ReservationController extends  AbstractController{
                 $reservation->setLieuRecup($request->get('lieuRecup'));
                 $reservation->setLieuRetour($request->get('lieuRetour'));
                 $reservation->setPrixTotal($voiture->getPrixParJour() * ((float)$jours) );
+                $reservation->setStatut('FALSE');
                 $em->getRepository(Voiture::class)->find($id)->setStatutReservation('true');
                 $errors = $validator->validate($reservation);
                 if(count($errors) > 0){

@@ -12,10 +12,9 @@ use App\Repository\ImageRepository;
 use App\Repository\MarqueRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
-use App\Repository\VoitureRepository;
 use App\Service\FileUploaderService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,10 +35,10 @@ class CarController extends AbstractController{
                            FileUploaderService $fileUploaderService,
                            EntityManagerInterface $em):Response{
         $user = $this->userRepository->findUserByEmailOrUsername($this->getUser()->getUserIdentifier());
-        $id = $user->getProfile()->getId();
+        $idrole = $user->getProfile()->getId();
         $marques = $this->marqueRepository->findAll();
         $categories = $this->categoryRepository->findAll();
-        if($role = $this->roleRepository->getRole($id, 'ADMIN')) {
+        if($this->roleRepository->getRole($idrole, 'ADMIN')) {
 
             if ($request->isMethod("POST")) {
                 $voiture = new Voiture();
@@ -49,7 +48,7 @@ class CarController extends AbstractController{
                 $voiture->setLieu($request->get("lieu"));
                 $voiture->setAttributs($request->get("attributs"));
                 $voiture->setPrixParJour($request->get("prixParJour"));
-                $voiture->setCreatedAt(new \DateTimeImmutable('now'));
+                $voiture->setCreatedAt(new DateTimeImmutable('now'));
                 $voiture->setMarque($em->getRepository(Marque::class)->find($request->get("marque")));
                 $voiture->setCategorie($em->getRepository(Categorie::class)->find($request->get("categorie")));
                 $voiture->setStatutReservation('false');
@@ -76,7 +75,7 @@ class CarController extends AbstractController{
     }
 
     #[Route('/car_list', name: 'car.list')]
-    public function carList(Request $request,EntityManagerInterface $em,ImageRepository $imageRepository): Response
+    public function carList(EntityManagerInterface $em,ImageRepository $imageRepository): Response
     {
         $voitures = $em->getRepository(Voiture::class)->findAllNotBooked();
         $images = $imageRepository->findAll();
@@ -87,7 +86,7 @@ class CarController extends AbstractController{
     }
 
     #[Route('/car_show/{id}', name: 'car.show')]
-    public function carShow(Request $request,EntityManagerInterface $em,$id){
+    public function carShow(EntityManagerInterface $em,$id):Response{
         $voiture= $em->getRepository(Voiture::class)->find($id);
         $image = $em->getRepository(Image::class)->findImageByCar($id);
         return $this->render('car/car.html.twig',[
@@ -95,15 +94,22 @@ class CarController extends AbstractController{
             'image' => $image,
         ]);
     }
-
-    public function CarReturned(Request $request,EntityManagerInterface $em,$id){
-        $reservation = $em->getRepository(Reservation::class)->find($id);
-        $voiture = $reservation->getVoiture();
-        $voiture->setStatutReservation(0);
-        $voiture->setLieu($reservation->getLieuRetour());
-        $em->persist($voiture);
-        $em->flush();
-        return $this->redirectToRoute('admin');
+    #[Route('/car_returned/{id}', name: 'car.return')]
+    public function CarReturned(EntityManagerInterface $em,$id):Response{
+        $user = $this->userRepository->findUserByEmailOrUsername($this->getUser()->getUserIdentifier());
+        $idrole = $user->getProfile()->getId();
+        if($role = $this->roleRepository->getRole($idrole, 'ADMIN')) {
+            $reservation = $em->getRepository(Reservation::class)->getReservationById($id);
+            $reservation->setStatut(1);
+            $voiture = $reservation->getVoiture();
+            $voiture->setStatutReservation(0);
+            $voiture->setLieu($reservation->getLieuRetour());
+            $em->persist($reservation);
+            $em->persist($voiture);
+            $em->flush();
+            return $this->redirectToRoute('admin');
+        }
+        return $this->redirectToRoute('home', [], Response::HTTP_BAD_REQUEST);
     }
 
     #[Route('/car_search/', name: 'car.search')]

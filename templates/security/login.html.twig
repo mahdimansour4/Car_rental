@@ -15,9 +15,9 @@
                 </div>
             {% endif %}
             <label for="inputUsername">Nom d'utilisateur</label>
-            <input type="text" value="{{ last_username }}" name="username" id="inputUsername"  required >
+            <input type="text" value="{{ last_username }}" name="username" id="inputUsername"    >
             <label for="inputPassword">Mot de passe</label>
-            <input type="password" name="password" id="inputPassword"  required>
+            <input type="password" name="password" id="inputPassword"  >
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             <div class="checkbox-container">
                 <input id="remember_me" class="form-check-input" type="checkbox" name="_remember_me">

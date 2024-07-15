@@ -54,10 +54,17 @@ class Voiture
     #[ORM\Column]
     private ?bool $statutReservation = null;
 
+    /**
+     * @var Collection<int, FicheMaintenance>
+     */
+    #[ORM\OneToMany(targetEntity: FicheMaintenance::class, mappedBy: 'voiture')]
+    private Collection $ficheMaintenances;
+
     public function __construct()
     {
         $this->image = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+        $this->ficheMaintenances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -229,6 +236,36 @@ class Voiture
     public function setStatutReservation(bool $statutReservation): static
     {
         $this->statutReservation = $statutReservation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, FicheMaintenance>
+     */
+    public function getFicheMaintenances(): Collection
+    {
+        return $this->ficheMaintenances;
+    }
+
+    public function addFicheMaintenance(FicheMaintenance $ficheMaintenance): static
+    {
+        if (!$this->ficheMaintenances->contains($ficheMaintenance)) {
+            $this->ficheMaintenances->add($ficheMaintenance);
+            $ficheMaintenance->setVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFicheMaintenance(FicheMaintenance $ficheMaintenance): static
+    {
+        if ($this->ficheMaintenances->removeElement($ficheMaintenance)) {
+            // set the owning side to null (unless already changed)
+            if ($ficheMaintenance->getVoiture() === $this) {
+                $ficheMaintenance->setVoiture(null);
+            }
+        }
 
         return $this;
     }

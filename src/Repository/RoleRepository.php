@@ -20,7 +20,7 @@ class RoleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->innerJoin('r.profile','p')
             ->innerJoin('p.roles','rt')
-            ->where('rt.code = :code')
+            ->where('rt.code LIKE :code')
             ->andWhere('p.id = :profile')
             ->setParameter('code',$code)
             ->setParameter('profile',$idprofile)
