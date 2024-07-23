@@ -2,10 +2,53 @@
 
 {% block title %}Mes Réservations{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .reservations-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .reservation-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #fff;
+            padding: 15px;
+            width: 300px;
+        }
+        .reservation-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .reservation-card ul li {
+            margin-bottom: 10px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+        .no-reservations {
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="container">
+    <div class="container mt-4">
         {% if reservations %}
-            <h1>Mes Réservations</h1>
+            <h1 class="text-center mb-4">Mes Réservations</h1>
             <div class="reservations-list">
                 {% for reservation in reservations %}
                     <div class="reservation-card">
@@ -13,7 +56,9 @@
                             <li><strong>Date Début:</strong> {{ reservation.dateDebut | date('d-m-Y') }}</li>
                             <li><strong>Date Fin:</strong> {{ reservation.dateFin | date('d-m-Y') }}</li>
                             <li><strong>Voiture:</strong> {{ reservation.voiture.marque.nom }} - {{ reservation.voiture.modele }}</li>
-                            <li><a class="btn" href="{{ path('car.show', {id: reservation.voiture.id}) }}">Voir</a> </li>
+                            <li>
+                                <a class="btn btn-primary" href="{{ path('car.show', {id: reservation.voiture.id}) }}">Voir</a>
+                            </li>
                         </ul>
                     </div>
                 {% endfor %}

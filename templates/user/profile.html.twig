@@ -3,18 +3,61 @@
 {% block title %}{{ user.username }}'s Profile{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="profile-card">
-            <div class="profile-header">
-                <h2>{{ user.username }}</h2>
-            </div>
-            <div class="profile-info">
-                <ul>
-                    <li><strong>Email:</strong> {{ user.email }}</li>
-                    <li><strong>Telephone:</strong> {{ user.telephone }}</li>
-                    <li><strong>CIN:</strong> {{ user.cIN }}</li>
-                </ul>
+    <!-- Hero Section -->
+    <div class="hero-wrap ftco-degree-bg" style="background-image: url('{{ asset('images/profile-bg.jpg') }}');" data-stellar-background-ratio="0.5">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row no-gutters slider-text justify-content-center align-items-center">
+                <div class="col-lg-8 ftco-animate">
+                    <div class="text w-100 text-center mb-md-5 pb-md-5">
+                        <h1 class="mb-4">{{ user.username }}'s Profile</h1>
+                        <p style="font-size: 18px;">Welcome to your profile page. Here you can view and manage your account details.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Profile Section -->
+    <section class="ftco-section ftco-no-pt bg-light">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-md-12">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <h2>{{ user.username }}</h2>
+                        </div>
+                        <div class="profile-info">
+                            <ul>
+                                <li><strong>Email:</strong> {{ user.email }}</li>
+                                <li><strong>Telephone:</strong> {{ user.telephone }}</li>
+                                <li><strong>CIN:</strong> {{ user.cIN }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="ftco-section ftco-about">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-md-6 p-md-5 img img-2 d-flex justify-content-center align-items-center" style="background-image: url(images/about-profile.jpg);">
+                </div>
+                <div class="col-md-6 wrap-about ftco-animate">
+                    <div class="heading-section heading-section-white pl-md-5">
+                        <span class="subheading">About Me</span>
+                        <h2 class="mb-4">Learn More About {{ user.username }}</h2>
+
+                        <p>Here you can find more information about yourself and your activities. Keep your profile up-to-date to ensure the best experience.</p>
+                        <p><a href="#" class="btn btn-primary py-3 px-4">Update Profile</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
 {% endblock %}

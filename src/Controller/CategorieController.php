@@ -38,8 +38,10 @@ class CategorieController extends  AbstractController{
             }
             return $this->render('categorie/create.html.twig', [
                 'categories' => $categories,
+                'isAdmin' => true,
             ]);
         }
-        return $this->redirectToRoute('home', [], Response::HTTP_BAD_REQUEST);
+        $this->addFlash("Vous n'avez pas l'acces a cette page");
+        return $this->redirectToRoute('home',);
     }
 }

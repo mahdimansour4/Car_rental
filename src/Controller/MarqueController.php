@@ -37,8 +37,10 @@ class MarqueController extends AbstractController{
             }
             return $this->render('marque/create.html.twig',[
                 'marques' => $marques,
+                'isAdmin' => true,
             ]);
         }
-        return $this->redirectToRoute('home', [], Response::HTTP_BAD_REQUEST);
+        $this->addFlash("Vous n'avez pas l'acces a cette page");
+        return $this->redirectToRoute('home',);
     }
 }

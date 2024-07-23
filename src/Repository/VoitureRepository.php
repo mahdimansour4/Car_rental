@@ -36,6 +36,31 @@ class VoitureRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByFilter(array $marques, array $categories, string $nom)
+    {
+        $qb = $this->createQueryBuilder('v');
+
+        if (!empty($categories)) {
+            $qb->andWhere('v.categorie IN (:categories)')
+                ->setParameter('categories', $categories);
+        }
+
+        if (!empty($marques)) {
+            $qb->andWhere('v.marque IN (:marques)')
+                ->setParameter('marques', $marques);
+        }
+
+        if (!empty($nom)) {
+            $qb->andWhere('v.modele LIKE :nom')
+                ->setParameter('nom', '%' . $nom . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+
 //    /**
 //     * @return Voiture[] Returns an array of Voiture objects
 //     */

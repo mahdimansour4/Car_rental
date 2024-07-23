@@ -1,20 +1,20 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
 {% block title %}Admin Panel{% endblock %}
 
-{% block body %}
+{% block admin_content %}
     {% if isAdmin %}
-        <div class="admin-section">
-            <div class="admin-users">
-                <h1>Admin Users</h1>
-                <table class="admin-table">
-                    <thead>
+        <div class="admin-users">
+            <h1 class="text-primary">Admin Users</h1>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
                     <tr>
-                        <th>Nom Utilisateur</th>
-                        <th>Email</th>
-                        <th>CIN</th>
-                        <th>Telephone</th>
-                        <th>Date Creation</th>
+                        <th scope="col">Nom Utilisateur</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">CIN</th>
+                        <th scope="col">Telephone</th>
+                        <th scope="col">Date Creation</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -30,17 +30,19 @@
                     </tbody>
                 </table>
             </div>
+        </div>
 
-            <div class="normal-users">
-                <h1>Normal Users</h1>
-                <table class="admin-table">
-                    <thead>
+        <div class="normal-users mt-4">
+            <h1 class="text-primary">Normal Users</h1>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
                     <tr>
-                        <th>Nom Utilisateur</th>
-                        <th>Email</th>
-                        <th>CIN</th>
-                        <th>Telephone</th>
-                        <th>Date Creation</th>
+                        <th scope="col">Nom Utilisateur</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">CIN</th>
+                        <th scope="col">Telephone</th>
+                        <th scope="col">Date Creation</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -56,87 +58,10 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="normal-users">
-                <h1>Reservations</h1>
-                <table class="admin-table">
-                    <thead>
-                    <tr>
-                        <th>Nom Utilisateur</th>
-                        <th>Voiture</th>
-                        <th>Date Debut</th>
-                        <th>Date Fin</th>
-                        <th>Prix Total</th>
-                        <th>Date Creation</th>
-                        <th>Statut</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for reservation in reservations %}
-                        <tr>
-                            <td>{{ reservation.user.username }}</td>
-                            <td><a href="{{ path('car.show', {id : reservation.voiture.id}) }}" class="btn">{{ reservation.voiture.modele }} - {{ reservation.voiture.marque.nom }}</a></td>
-                            <td>{{ reservation.dateDebut | date }}</td>
-                            <td>{{ reservation.dateFin | date }}</td>
-                            <td>{{ reservation.prixTotal }}</td>
-                            <td>{{ reservation.createdAt | date }}</td>
-                            {% if reservation.statut == 1 %}
-                                <td>Fini</td>
-                            {% else %}
-                                <td>En cours</td>
-                            {% endif %}
-                            <td><a href="{{ path('my.reservation.delete', {id: reservation.id}) }}" class="btn">Supprimer</a>
-                                {% if reservation.statut == 0 %}
-                                    <a href="{{ path('car.return', {id: reservation.id}) }}" class="btn">La voiture a ete retourne</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="admin-actions">
-                <a href="{{ path('car.create') }}" class="btn">Ajouter Une voiture</a>
-                <a href="{{ path('marque.create') }}" class="btn">Creer une marque</a>
-                <a href="{{ path('categorie.create') }}" class="btn">Creer une categorie</a>
-            </div>
-
-            <div class="grid-container">
-                {% if voitures %}
-                    {% for voiture in voitures %}
-                        <div class="car-card">
-                            <div class="car-image">
-                                {% set carImage = images|filter(image => image.voiture == voiture)|first %}
-                                {% if carImage %}
-                                    <img src="{{ asset('uploads/' ~ carImage.imagePath) }}" alt="Voiture image">
-                                {% endif %}
-                            </div>
-                            <div class="car-details">
-                                <h2>{{ voiture.modele }}</h2>
-                                <ul>
-                                    <li><strong>Couleur:</strong> {{ voiture.couleur }}</li>
-                                    <li><strong>Marque:</strong> {{ voiture.marque.nom }}</li>
-                                    <li><strong>Catégorie:</strong> {{ voiture.categorie.nom }}</li>
-                                    <li><strong>Lieu:</strong> {{ voiture.lieu }}</li>
-                                    <li><strong>Prix par Jour:</strong> {{ voiture.prixParJour }} DH</li>
-                                    <li><strong>Attributs:</strong> {{ voiture.attributs }}</li>
-                                    <li>
-                                        <div class="btn-container">
-                                            <a href="{{ path('car.show', {id: voiture.id}) }}" class="btn">Voir</a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>No cars available.</p>
-                {% endif %}
-            </div>
         </div>
     {% else %}
-        <p>You do not have access to view this page.</p>
+        <div class="alert alert-danger" role="alert">
+            You do not have access to view this page.
+        </div>
     {% endif %}
 {% endblock %}

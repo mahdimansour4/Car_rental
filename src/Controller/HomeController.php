@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Categorie;
+use App\Entity\Marque;
+use App\Entity\Image;
 use App\Entity\User;
 use App\Entity\Voiture;
 use App\Repository\ProfileRepository;
@@ -21,7 +24,16 @@ class HomeController extends AbstractController{
     EntityManagerInterface $em,
     ProfileRepository $profileRepository,
     RoleRepository $roleRepository):Response{
-        return $this->render('home/index.html.twig');
+        $marque= $em->getRepository(Marque::class)->findAll();
+        $categories = $em->getRepository(Categorie::class)->findAll();
+        $voitures = $em->getRepository(Voiture::class)->findAll();
+        $images = $em->getRepository(Image::class)->findAll();
+        return $this->render('home/index.html.twig',[
+            'marques' => $marque,
+            'categories' => $categories,
+            'voitures' => $voitures,
+            'images' => $images
+        ]);
     }
 
     #[Route('/about', name: 'about')]

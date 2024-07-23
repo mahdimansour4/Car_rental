@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title "Creer Les papier de voiture" %}
+
+{% block body %}
+    <form action="{{ path('papierVoiture',{id : id}) }}" method="post">
+        <label for="dateFinAssurance">Date fin assurance</label>
+        <input type="date" name="dateFinAssurance" id="dateFinAssurance">
+        <label for="prixAssurance">Prix Assurance</label>
+        <input type="number" name="prixAssurance" id="prixAssurance">
+        <label for="dateFinVignette">Date fin vignette</label>
+        <input type="date" name="dateFinVignette" id="dateFinVignette">
+        <label for="prixVignette">Prix vignette</label>
+        <input type="number" name="prixVignette" id="prixVignette">
+        <button type="submit">Sauvegarder</button>
+    </form>
+{% endblock %}

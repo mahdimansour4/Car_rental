@@ -62,15 +62,19 @@ class CarController extends AbstractController{
                 $em->persist($voiture);
                 $em->flush();
                 $this->addFlash('success',"La voiture a ete ajoute");
-                return $this->redirectToRoute('admin');
+                return $this->redirectToRoute('papierVoiture',[
+                    'id' => $voiture->getId()
+                ]);
             }
 
             return $this->render('car/create.html.twig',[
                 'marques' => $marques,
                 'categories' => $categories,
+                'isAdmin' => true,
             ]);
         }else{
-            return $this->redirectToRoute('home', [], Response::HTTP_BAD_REQUEST);
+            $this->addFlash("Vous n'avez pas l'acces a cette page");
+            return $this->redirectToRoute('home',);
         }
     }
 
@@ -109,21 +113,84 @@ class CarController extends AbstractController{
             $em->flush();
             return $this->redirectToRoute('admin');
         }
-        return $this->redirectToRoute('home', [], Response::HTTP_BAD_REQUEST);
+        $this->addFlash("Vous n'avez pas l'acces a cette page");
+        return $this->redirectToRoute('home',);
     }
 
     #[Route('/car_search/', name: 'car.search')]
-    public function search(Request $request,EntityManagerInterface $em){
-        if($request->isMethod("GET")){
-            $voitures = $em->getRepository(Voiture::class)->findByQuery($request->get('q'));
+    public function search(Request $request, EntityManagerInterface $em) {
+        $marques = $em->getRepository(Marque::class)->findAll();
+        $categories = $em->getRepository(Categorie::class)->findAll();
+
+        if ($request->isMethod("GET")) {
+            $query = $request->query->all();
+            $voitures = $em->getRepository(Voiture::class)->findByFilter(
+                $query['marques'] ?? [],
+                $query['categories'] ?? [],
+                $query['q'] ?? null
+            );
             $images = $em->getRepository(Image::class)->findAll();
-            return $this->render('car/car_list.html.twig',[
+
+            return $this->render('car/car_list.html.twig', [
                 'voitures' => $voitures,
                 'images' => $images,
+                'marques' => $marques,
+                'categories' => $categories
             ]);
         }
-        return $this->render('car/car.html.twig',[
+
+        return $this->render('car/car_list.html.twig', [
             'voitures' => $em->getRepository(Voiture::class)->findAll(),
+            'images' => $em->getRepository(Image::class)->findAll(),
+            'marques' => $marques,
+            'categories' => $categories
         ]);
     }
+
+    #[Route('/car_edit/{id}', name: 'car.edit')]
+    public function CarEdit(Request $request, EntityManagerInterface $em,$id,FileUploaderService $fileUploaderService){
+        $user = $this->userRepository->findUserByEmailOrUsername($this->getUser()->getUserIdentifier());
+        $idrole = $user->getProfile()->getId();
+        if($role = $this->roleRepository->getRole($idrole, 'ADMIN')) {
+            $voiture = $em->getRepository(Voiture::class)->find($id);
+            $image = $em->getRepository(Image::class)->findImageByCar($id);
+            $marques = $em->getRepository(Marque::class)->findAll();
+            $categories = $em->getRepository(Categorie::class)->findAll();
+            if($request->isMethod("POST")) {
+                $voiture->setModele($request->get("modele"));
+                $voiture->setCouleur($request->get("couleur"));
+                $voiture->setLieu($request->get("lieu"));
+                $voiture->setAttributs($request->get("attributs"));
+                $voiture->setPrixParJour($request->get("prixParJour"));
+                $voiture->setCreatedAt(new DateTimeImmutable('now'));
+                $voiture->setMarque($em->getRepository(Marque::class)->find($request->get("marque")));
+                $voiture->setCategorie($em->getRepository(Categorie::class)->find($request->get("categorie")));
+                $voiture->setStatutReservation('false');
+                $file = $request->files->get('image');
+                if ($file) {
+                    $fileName = $fileUploaderService->upload($file);
+                    $image->setImagePath($fileName);
+                }
+                $voiture->addImage($image);
+                $em->persist($image);
+                $em->persist($voiture);
+                $em->flush();
+                $this->addFlash('success',"La voiture a ete modifier");
+                return $this->redirectToRoute('papierVoiture',[
+                    'id' => $voiture->getId()
+                ]);
+            }
+            return $this->render('car/edit.html.twig',[
+                'voiture' => $voiture,
+                'image' => $image,
+                'marques' => $marques,
+                'categories' => $categories,
+                'isAdmin'=> true,
+            ]);
+        }
+        $this->addFlash("Vous n'avez pas l'acces a cette page");
+        return $this->redirectToRoute('home',);
+    }
+
+
 }

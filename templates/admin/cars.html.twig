@@ -1,0 +1,142 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Liste des Voitures{% endblock %}
+
+{% block admin_content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="grid-container">
+                    {% if voitures %}
+                        {% for voiture in voitures %}
+                            <div class="car-card">
+                                <div class="car-image">
+                                    {% set carImage = images|filter(image => image.voiture == voiture)|first %}
+                                    {% if carImage %}
+                                        <img src="{{ asset('uploads/' ~ carImage.imagePath) }}" alt="Voiture image">
+                                    {% endif %}
+                                </div>
+                                <div class="car-details">
+                                    <h2>{{ voiture.modele }}</h2>
+                                    <ul>
+                                        <li><strong>Couleur:</strong> {{ voiture.couleur }}</li>
+                                        <li><strong>Marque:</strong> {{ voiture.marque.nom }}</li>
+                                        <li><strong>Catégorie:</strong> {{ voiture.categorie.nom }}</li>
+                                        <li><strong>Lieu:</strong> {{ voiture.lieu }}</li>
+                                        <li><strong>Prix par Jour:</strong> {{ voiture.prixParJour }} DH</li>
+                                        <li><strong>Attributs:</strong> {{ voiture.attributs }}</li>
+                                        <li>
+                                            <div class="btn-container">
+                                                <a href="{{ path('car.show', {id: voiture.id}) }}" class="btn btn-primary">Voir</a>
+                                                <a href="{{ path('ficheMaintenance', {id: voiture.id}) }}" class="btn btn-warning">Maintenance</a>
+                                                <a href="{{ path('car.edit',{id: voiture.id}) }}" class="btn btn-secondary">Modification</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-cars">Aucune voiture disponible.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .car-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            width: 320px;
+            background-color: #fff;
+            font-family: 'Roboto', sans-serif;
+            transition: transform 0.3s ease;
+        }
+        .car-card:hover {
+            transform: scale(1.03);
+        }
+        .car-image img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .car-details {
+            padding: 20px;
+        }
+        .car-details h2 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .car-details ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .car-details ul li {
+            margin-bottom: 8px;
+            font-size: 1em;
+            color: #666;
+        }
+        .car-details ul li strong {
+            color: #333;
+        }
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn {
+            display: inline-block;
+            text-align: center;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .no-cars {
+            font-size: 1.2em;
+            color: #999;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}

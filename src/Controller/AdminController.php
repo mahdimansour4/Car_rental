@@ -45,7 +45,40 @@ class AdminController extends AbstractController
                 'reservations' => $reservation,
             ]);
         } else {
-            return $this->redirectToRoute('home', [], Response::HTTP_BAD_REQUEST);
+            $this->addFlash("Vous n'avez pas l'acces a cette page");
+            return $this->redirectToRoute('home',);
         }
+    }
+
+    #[Route('/admin/reservation', name: 'admin.reservation')]
+    public function ReservationListe(Request $request): Response{
+        $user = $this->userRepository->findUserByEmailOrUsername($this->getUser()->getUserIdentifier());
+        $id = $user->getProfile()->getId();
+        if ($role = $this->roleRepository->getRole($id, 'ADMIN')) {
+            $reservation = $this->reservationRepository->findAll();
+            return $this->render('admin/reservations.html.twig', [
+                'reservations' => $reservation,
+                'isAdmin'=> true,
+            ]);
+        }
+        $this->addFlash("Vous n'avez pas l'acces a cette page");
+        return $this->redirectToRoute('home',);
+    }
+
+    #[Route('/admin/cars', name: 'admin.cars')]
+    public function CarsListe(Request $request): Response{
+        $user = $this->userRepository->findUserByEmailOrUsername($this->getUser()->getUserIdentifier());
+        $id = $user->getProfile()->getId();
+        if ($role = $this->roleRepository->getRole($id, 'ADMIN')) {
+            $voitures = $this->voitureRepository->findAll();
+            $images = $this->imageRepository->findAll();
+            return $this->render('admin/cars.html.twig', [
+                'voitures' => $voitures,
+                'images' => $images,
+                'isAdmin'=> true,
+            ]);
+        }
+        $this->addFlash("Vous n'avez pas l'acces a cette page");
+        return $this->redirectToRoute('home',);
     }
 }

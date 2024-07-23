@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modification de Voiture{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .edit-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        .edit-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .edit-container label {
+            margin-top: 10px;
+        }
+        .edit-container input,
+        .edit-container select {
+            margin-top: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            cursor: text;
+        }
+        .edit-container .custom-file-upload {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: inline-block;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            width: 150px;
+            text-align: center;
+        }
+        .edit-container button {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .edit-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="edit-container">
+        <form action="{{ path('car.create') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="modele">Modele</label>
+                <input type="text" id="modele" name="modele" value="{{ voiture.modele }}" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="couleur">Couleur</label>
+                <input type="text" id="couleur" name="couleur" value="{{ voiture.couleur }}" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="lieu">Lieu</label>
+                <input type="text" id="lieu" name="lieu" value="{{ voiture.lieu }}" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="marque">Marque</label>
+                <select id="marque" name="marque" class="form-control">
+                    {% for marque in marques %}
+                        <option value="{{ marque.id }}" {% if marque.id == voiture.marque.id %}selected{% endif %}>{{ marque.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="categorie">Categorie</label>
+                <select id="categorie" name="categorie" class="form-control">
+                    {% for categorie in categories %}
+                        <option value="{{ categorie.id }}" {% if categorie.id == voiture.categorie.id %}selected{% endif %}>{{ categorie.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="attributs">Attributs</label>
+                <input type="text" id="attributs" name="attributs" class="form-control" value="{{ voiture.attributs }}">
+            </div>
+
+            <div class="form-group">
+                <label for="prixParJour">Prix par jour</label>
+                <input type="number" id="prixParJour" name="prixParJour" class="form-control" value="{{ voiture.prixParJour }}">
+            </div>
+
+            <div class="form-group">
+                <label for="image">Image</label>
+                <label for="image" class="custom-file-upload">Choose File</label>
+                <input type="file" id="image" name="image" accept="image/*" class="form-control" value="{{ image.imagePath }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Sauvegarder</button>
+        </form>
+    </div>
+{% endblock %}

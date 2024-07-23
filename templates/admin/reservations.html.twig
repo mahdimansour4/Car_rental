@@ -1,0 +1,82 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Les Réservations{% endblock %}
+
+{% block admin_content %}
+    <h1>Réservations</h1>
+    <table class="admin-table">
+        <thead>
+        <tr>
+            <th>Nom Utilisateur</th>
+            <th>Voiture</th>
+            <th>Date Début</th>
+            <th>Date Fin</th>
+            <th>Prix Total</th>
+            <th>Date Création</th>
+            <th>Statut</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.user.username }}</td>
+                <td><a href="{{ path('car.show', {id: reservation.voiture.id}) }}" class="btn">{{ reservation.voiture.modele }} - {{ reservation.voiture.marque.nom }}</a></td>
+                <td>{{ reservation.dateDebut | date }}</td>
+                <td>{{ reservation.dateFin | date }}</td>
+                <td>{{ reservation.prixTotal }}</td>
+                <td>{{ reservation.createdAt | date }}</td>
+                {% if reservation.statut == 1 %}
+                    <td>Fini</td>
+                {% else %}
+                    <td>En cours</td>
+                {% endif %}
+                <td>
+                    <a href="{{ path('my.reservation.delete', {id: reservation.id}) }}" class="btn">Supprimer</a>
+                    {% if reservation.statut == 0 %}
+                        <a href="{{ path('car.return', {id: reservation.id}) }}" class="btn">La voiture a été retournée</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .admin-content h1 {
+            margin-bottom: 20px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table thead {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .admin-table tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        .admin-table a.btn {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .admin-table a.btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}

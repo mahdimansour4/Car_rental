@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title "Creer une fiche Maintenance" %}
+
+{% block body %}
+    <form action="{{ path('ficheMaintenance',{id : id}) }}" method="post">
+        <label for="date">Date Maintenance</label>
+        <input type="date" name="date" id="date">
+        <label for="type">Type Maintenance</label>
+        <select id="type">
+            <option value="Maintenance">Maintenance</option>
+            <option value="Accident">Accident</option>
+        </select>
+        <label for="kilometrage">Kilometrage</label>
+        <input type="number" name="kilometrage" id="kilometrage">
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description">
+        <button type="submit">Ajouter</button>
+    </form>
+{% endblock %}

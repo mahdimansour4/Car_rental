@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px; /* Adjust width as needed */
+            background-color: #f8f9fa; /* Bootstrap's bg-light */
+            border-right: 1px solid #dee2e6; /* Border for separation */
+            overflow-y: auto; /* Scrollable sidebar if content overflows */
+        }
+        .content-wrapper {
+            margin-left: 250px; /* Same as sidebar width */
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .admin-content {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+{% block body %}
+    {% if isAdmin %}
+        <div class="sidebar">
+            <ul class="list-unstyled p-3">
+                <li><a href="{{ path('admin.reservation') }}">Reservations</a></li>
+                <li><a href="{{ path('admin.cars') }}">Voitures</a></li>
+                <li><a href="{{ path('car.create') }}">Ajouter Une voiture</a></li>
+                <li><a href="{{ path('marque.create') }}">Creer une marque</a></li>
+                <li><a href="{{ path('categorie.create') }}">Creer une categorie</a></li>
+            </ul>
+        </div>
+        <div class="content-wrapper">
+            <div class="admin-content">
+                {% block admin_content %}
+                    <!-- Admin content will be inserted here -->
+                {% endblock %}
+            </div>
+        </div>
+    {% else %}
+        <div class="container mt-4">
+            <div class="alert alert-danger" role="alert">
+                You do not have access to view this page.
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+<script src="{{ asset('path/to/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('path/to/your-custom-scripts.js') }}"></script>
+</body>
+</html>

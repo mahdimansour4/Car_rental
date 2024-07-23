@@ -23,6 +23,8 @@ class ReservationController extends  AbstractController{
     ) {
     }
 
+
+
     #[Route('/car/{id}/reservation_create', name: 'reservation.create')]
         public function createReservation(Request $request,EntityManagerInterface $em,$id,ValidatorInterface $validator): Response{
         $user = $this->userRepository->findUserByEmailOrUsername($this->getUser()->getUserIdentifier());
@@ -43,12 +45,14 @@ class ReservationController extends  AbstractController{
                 $reservation->setLieuRecup($request->get('lieuRecup'));
                 $reservation->setLieuRetour($request->get('lieuRetour'));
                 $reservation->setPrixTotal($voiture->getPrixParJour() * ((float)$jours) );
-                $reservation->setStatut('FALSE');
+                $reservation->setStatut(0);
                 $em->getRepository(Voiture::class)->find($id)->setStatutReservation('true');
                 $errors = $validator->validate($reservation);
                 if(count($errors) > 0){
                     $this->addFlash('error','Vous avez commis une erreur dans votre reservation');
-                    return $this->redirectToRoute('reservation.create');
+                    return $this->redirectToRoute('reservation.create',[
+                        'id' => $id
+                    ]);
                 }
                 $em->persist($reservation);
                 $em->flush();
@@ -59,7 +63,8 @@ class ReservationController extends  AbstractController{
                 'id' => $id
             ]);
         }
-        return $this->redirectToRoute('home');
+        $this->addFlash("Vous devez etre connecter");
+        return $this->redirectToRoute('app_login',);
     }
 
     #[Route('/my_reservations', name: 'my.reservations')]
@@ -77,5 +82,19 @@ class ReservationController extends  AbstractController{
         $em->remove($reservation);
         $em->flush();
         return $this->redirectToRoute('my.reservations');
+    }
+
+    #[Route('/admin/reservations', name: 'admin.reservations')]
+    public function reservationlist(Request $request,EntityManagerInterface $em){
+        $user = $this->userRepository->findUserByEmailOrUsername($this->getUser()->getUserIdentifier());
+        $iduser = $user->getProfile()->getId();
+        if($role = $this->roleRepository->getRole($iduser, 'ADMIN')){
+        $reservations = $em->getRepository(Reservation::class)->findAll();
+        return $this->render('reservation/list.html.twig', [
+            'reservations' => $reservations,
+        ]);
+        }
+        $this->addFlash("danger","Vous n'avez pas l'acces a cette page");
+        return $this->redirectToRoute('home',);
     }
 }
